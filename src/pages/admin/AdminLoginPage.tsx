@@ -1,5 +1,5 @@
-import { useState, type SubmitEvent } from "react";
-import { useNavigate } from "react-router";
+import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 
 import { useLoginMutation } from "../../redux/features/api/authApi/authApi";
@@ -9,8 +9,9 @@ import { getErrorMessage } from "../../utils/getErrorMessage";
 
 import logo from "../../assets/logo/jatiyo-sangsad.webp";
 
-export default function AdminLoginPage() {
+const AdminLoginPage = () => {
     const navigate = useNavigate();
+
     const [login, { isLoading }] = useLoginMutation();
 
     const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ export default function AdminLoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
 
-    const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError("");
 
@@ -33,15 +34,23 @@ export default function AdminLoginPage() {
                 password,
             }).unwrap();
 
-            // Backend থেকে ADMIN role যাচাই
-            if (response?.user?.role !== "ADMIN") {
+            const user = response?.user;
+
+            if (!user) {
+                setError("লগইন তথ্য পাওয়া যায়নি।");
+                return;
+            }
+
+            if (user.role !== "ADMIN") {
                 setError("এই অ্যাকাউন্টের Admin Access নেই।");
                 return;
             }
 
-            navigate("/dashboard", { replace: true });
-        } catch (error) {
-            setError(getErrorMessage(error as never));
+            navigate("/dashboard", {
+                replace: true,
+            });
+        } catch (err) {
+            setError(getErrorMessage(err as never));
         }
     };
 
@@ -53,11 +62,10 @@ export default function AdminLoginPage() {
                     style={{
                         boxShadow:
                             "0 20px 60px -20px oklch(0 0 0 / 0.18), 0 2px 8px oklch(0 0 0 / 0.04)",
-                        animation: "fadeUp 0.5s ease both",
                     }}
                 >
                     <div className="px-6 pb-8 pt-9 sm:px-11 sm:pb-10 sm:pt-12">
-                        {/* Logo */}
+
                         <div className="mb-5 flex justify-center sm:mb-6">
                             <div className="flex h-28 w-28 items-center justify-center rounded-full p-2">
                                 <img
@@ -68,7 +76,6 @@ export default function AdminLoginPage() {
                             </div>
                         </div>
 
-                        {/* Title */}
                         <div className="mb-6 text-center sm:mb-[30px]">
                             <div className="mb-2 flex items-center justify-center gap-2 text-lg font-extrabold text-text-primary sm:text-[22px]">
                                 <ShieldCheck size={22} />
@@ -80,12 +87,10 @@ export default function AdminLoginPage() {
                             </div>
                         </div>
 
-                        {/* Login Form */}
                         <form
                             onSubmit={handleSubmit}
                             className="flex flex-col gap-4 sm:gap-[18px]"
                         >
-                            {/* Email */}
                             <div>
                                 <label
                                     htmlFor="admin-email"
@@ -104,11 +109,11 @@ export default function AdminLoginPage() {
                                     }}
                                     placeholder="Enter admin email"
                                     autoComplete="username"
-                                    className="w-full rounded-[10px] border-[1.5px] border-surface-border bg-surface px-3.5 py-3 text-sm text-text-primary outline-none transition-colors"
+                                    className="w-full rounded-[10px] border-[1.5px] border-surface-border bg-surface px-3.5 py-3 text-sm text-text-primary outline-none"
+                                    required
                                 />
                             </div>
 
-                            {/* Password */}
                             <div>
                                 <label
                                     htmlFor="admin-password"
@@ -132,7 +137,8 @@ export default function AdminLoginPage() {
                                         }}
                                         placeholder="••••••••"
                                         autoComplete="current-password"
-                                        className="w-full rounded-[10px] border-[1.5px] border-surface-border bg-surface py-3 pl-3.5 pr-11 text-sm text-text-primary outline-none transition-colors"
+                                        className="w-full rounded-[10px] border-[1.5px] border-surface-border bg-surface py-3 pl-3.5 pr-11 text-sm text-text-primary outline-none"
+                                        required
                                     />
 
                                     <button
@@ -142,12 +148,7 @@ export default function AdminLoginPage() {
                                                 (current) => !current,
                                             )
                                         }
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer bg-transparent p-1 text-text-secondary"
-                                        aria-label={
-                                            showPassword
-                                                ? "Hide password"
-                                                : "Show password"
-                                        }
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-text-secondary"
                                     >
                                         {showPassword ? (
                                             <EyeOff size={17} />
@@ -158,14 +159,12 @@ export default function AdminLoginPage() {
                                 </div>
                             </div>
 
-                            {/* Error */}
                             {error && (
                                 <div className="rounded-lg bg-danger-soft-bg px-3 py-2.5 text-[12.5px] text-danger-soft-text">
                                     {error}
                                 </div>
                             )}
 
-                            {/* Submit */}
                             <Button
                                 type="submit"
                                 isLoading={isLoading}
@@ -177,7 +176,6 @@ export default function AdminLoginPage() {
                             </Button>
                         </form>
 
-                        {/* Footer Text */}
                         <div className="mt-5 border-t border-surface-border pt-4 text-center text-[11px] text-text-secondary sm:mt-[26px] sm:pt-5 sm:text-xs">
                             Authorized administrators only
                         </div>
@@ -188,4 +186,6 @@ export default function AdminLoginPage() {
             <Footer />
         </div>
     );
-}
+};
+
+export default AdminLoginPage;
