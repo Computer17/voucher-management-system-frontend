@@ -15,6 +15,7 @@ import IncomeReportPage from "../pages/dashboard/incomeReport/IncomeReportPage";
 import ExpenseReportPage from "../pages/dashboard/expenseReport/ExpenseReportPage";
 import GeneralSettingsPage from "../pages/dashboard/generalSettings/GeneralSettingsPage";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
+import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 
 export const router = createBrowserRouter([
     {
@@ -85,6 +86,10 @@ export const router = createBrowserRouter([
                     {
                         path: "/admin",
                         Component: AdminLoginPage,
+                    },
+                    {
+                        path: "/admin/dashboard",
+                        Component: AdminDashboardPage,
                     },
                 ]
             },
