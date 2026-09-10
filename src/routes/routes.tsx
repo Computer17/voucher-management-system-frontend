@@ -14,6 +14,7 @@ import DoLettersPage from "../pages/dashboard/doLetters/DoLettersPage";
 import IncomeReportPage from "../pages/dashboard/incomeReport/IncomeReportPage";
 import ExpenseReportPage from "../pages/dashboard/expenseReport/ExpenseReportPage";
 import GeneralSettingsPage from "../pages/dashboard/generalSettings/GeneralSettingsPage";
+import AdminLoginPage from "../pages/admin/AdminLoginPage";
 
 export const router = createBrowserRouter([
     {
@@ -80,6 +81,10 @@ export const router = createBrowserRouter([
                     {
                         path: "*",
                         Component: DashboardNotFoundPage
+                    },
+                    {
+                        path: "/admin",
+                        Component: AdminLoginPage,
                     },
                 ]
             },
